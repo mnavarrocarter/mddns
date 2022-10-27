@@ -12,6 +12,24 @@ A lightweight and simpler alternative to DDClient.
 - **Modular Architecture**: implement your custom provider
 - **Flexible**: use as a program or a library
 
+## Usage 
+
+Create a `mddns.txt` file and add your entries:
+
+```txt
+# You can write comments
+google://user:pass@my.domain.dev
+```
+
+Then run the program:
+
+```bash
+mddns -config path/to/your/mddns.txt
+```
+
+And that's it! The program will detect when your ip changes and update every single configured provider in your
+config with the new ip.
+
 ## Supported Providers
 
 | Name                     | Status      | Package Path                                           | Example Config                    |
