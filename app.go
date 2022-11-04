@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/mnavarrocarter/mddns/debug"
 	"github.com/mnavarrocarter/mddns/ip"
-	"github.com/mnavarrocarter/mddns/ip/google"
+	"github.com/mnavarrocarter/mddns/ip/ipify"
 	"github.com/mnavarrocarter/mddns/provider"
 	_ "github.com/mnavarrocarter/mddns/provider/google"
 	"github.com/mnavarrocarter/mddns/provider/system"
@@ -18,7 +18,6 @@ import (
 type App struct {
 	ConfigFile string
 	Watch      bool
-	CacheFile  string
 	Interval   time.Duration
 	Debug      int
 }
@@ -38,15 +37,15 @@ func (a *App) Run() {
 
 	debug.MutateDefaultClient(logger.Debugf)
 
-	schedule := ip.Scheduler(a.Interval, a.CacheFile)
-	gb := google.NewBackend(nil)
+	schedule := ip.Scheduler(a.Interval)
+	back := ipify.NewBackend(nil)
 
 	updater, err := system.NewUpdater(a.ConfigFile, a.Watch, logger.Errorf)
 	if err != nil {
 		logger.Fatalf("provider error: %s", err.Error())
 	}
 
-	ips := generateIps(logger, schedule(gb))
+	ips := generateIps(logger, schedule(back))
 	runLoop(ctx, logger, ips, updater)
 }
 
